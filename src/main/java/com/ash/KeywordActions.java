@@ -2,11 +2,15 @@ package com.ash;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
+import java.io.File;
+import java.io.IOException;
 
-public class Actions {
+
+public class KeywordActions {
 
 
     public static WebDriver chrome;
@@ -19,15 +23,26 @@ public class Actions {
         capabilities.setCapability("chrome.binary","C://Program Files (x86)//Google//Chrome//Application//chrome.exe");
         capabilities.setCapability(ChromeOptions.CAPABILITY, options);
 
+        //Running chrome driver process
 
-        chrome = new ChromeDriver(capabilities);
-        //chrome.get("http://google.com");
-        String newurl = url;
-        chrome.get(newurl);
+        ChromeDriverService.Builder builder = new
+                ChromeDriverService.Builder();
+        ChromeDriverService srvc = builder.usingDriverExecutable(new
+                File("C://Users//ASH//IdeaProjects//Selenium//chromedriver_win32//chromedriver.exe"))
+                .usingPort(65423).build();
+        try {
+            srvc.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        chrome = new ChromeDriver(srvc);
+        String urlToRun = url;
+        chrome.get(urlToRun);
 
     }
 
-    public static void testClass1 (String text, String text2) {
+    public static void Search (String text, String text2) {
 
         String newtext = text;
         String newtext2 = text2;
