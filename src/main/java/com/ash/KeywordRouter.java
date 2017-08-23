@@ -7,66 +7,77 @@ import java.util.Arrays;
 
 public class KeywordRouter {
 
-    static String [][] keywordList;
-    static String[] stringMethodList;
-    static Method[] methodList;
+    private static String [][] keywordList;
+    private static String[] stringMethodList;
 
     public static void locateAndExecuteKeywords() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 
         //Start a cycle to iterate over the keywords which were fetched from Excel test case file
-        for (int j = 0; j < XLSTestCaseReader.numberOfKeywords; j++) {
+        for (int j = 0; j < XLSFileReader.numberOfKeywords; j++) {
 
-            //Check if keyword name from Excel is found in KeywordActions at all
-            if (Arrays.toString(stringMethodList).matches("(?i).*" + keywordList[3][j + 1] + ".*")) {
+            //System.out.println("Number of keywords to process : " + XLSFileReader.numberOfKeywords);
+            //Check if keyword name from Excel is found in KeywordActions
+            if ( (Arrays.toString(stringMethodList).matches("(?i).*" + keywordList[3][j + 1] + ".*"))) {
                 System.out.println("Processing keyword: " + keywordList[3][j + 1]);
 
-                //If implementation is found - start one more cycle to identify particular Java method within KeywordActions
-                for (int c = 0; c < stringMethodList.length; c++) {
+                    //If implementation is found - start one more cycle to identify particular Java method within KeywordActions
+                    for (String aStringMethodList : stringMethodList) {
 
-                    //Find a particular method in KeywordActions which corresponds to keyword from Excel
-                    if (stringMethodList[c].contains(keywordList[3][j + 1])) {
+                        //Find a particular method in KeywordActions which corresponds to keyword from Excel
+                        if (aStringMethodList.contains(keywordList[3][j + 1])) {
 
-                        //Get the indexes of parts of full method name represented by String i.e. "public static someMethod (java.Lang.String)"
-                        int nameMatchIndex = stringMethodList[c].indexOf(keywordList[3][j + 1]);
-                        int signatureParamPartStartIndex = stringMethodList[c].indexOf("(java");
+                            //Check if keyword name from Excel is having Run flag =Y
+                            //if (keywordList[2][j + 1] == "Y") {
 
-                        //Get exact method name to pass it to reflection mechanism for invocation
-                        String method = stringMethodList[c].substring(nameMatchIndex, signatureParamPartStartIndex);
+                                //Get the indexes of parts of full method name represented by String i.e. "public static someMethod (java.Lang.String)"
+                                int nameMatchIndex = aStringMethodList.indexOf(keywordList[3][j + 1]);
+                                int signatureParamPartStartIndex = aStringMethodList.indexOf("(java");
 
-                        //If 1 param is  passed from Excel - invoke method
-                        if (keywordList[4][j + 1] != "" && keywordList[5][j + 1] == "" && keywordList[6][j + 1] == "") {
+                                //Get exact method name to pass it to reflection mechanism for invocation
+                                String method = aStringMethodList.substring(nameMatchIndex, signatureParamPartStartIndex);
 
-                            Method methodToInvoke = KeywordActions.class.getDeclaredMethod(method, String.class);
-                            System.out.println("Executing method: " + methodToInvoke.toString());
-                            methodToInvoke.invoke(null, (keywordList[4][j + 1]));
+                                //If 1 param is  passed from Excel - invoke method
+                                if (/*keywordList[2][j + 1] == "Y" && */keywordList[4][j + 1] != "" && keywordList[5][j + 1] == "" && keywordList[6][j + 1] == "") {
 
-                        //If 2 params are passed from excel - invoke method
-                        } else if (keywordList[4][j + 1] != "" && keywordList[5][j + 1] != "" && keywordList[6][j + 1] == "") {
+                                    Method methodToInvoke = KeywordActions.class.getDeclaredMethod(method, String.class);
+                                    System.out.println("Executing method: " + methodToInvoke.toString() + " with arguments: " + keywordList[4][j + 1]);
+                                    methodToInvoke.invoke(null, (keywordList[4][j + 1]));
 
-                            Method methodToInvoke = KeywordActions.class.getDeclaredMethod(method, String.class, String.class);
-                            System.out.println("Executing method: " + methodToInvoke.toString());
-                            methodToInvoke.invoke(null, (keywordList[4][j + 1]), (keywordList[5][j + 1]));
 
-                        //If 3 params are passed from excel - invoke method
-                        } else if (keywordList[4][j + 1] != "" && keywordList[5][j + 1] != "" && keywordList[6][j + 1] != "") {
+                                    //If 2 params are passed from excel - invoke method
+                                } else if (/*keywordList[2][j + 1] == "Y" && */keywordList[4][j + 1] != "" && keywordList[5][j + 1] != "" && keywordList[6][j + 1] == "") {
 
-                            Method methodToInvoke = KeywordActions.class.getDeclaredMethod(method, String.class, String.class, String.class);
-                            System.out.println("Executing method: " + methodToInvoke.toString());
-                            methodToInvoke.invoke(null, (keywordList[4][j + 1]), (keywordList[5][j + 1]), (keywordList[6][j + 1]));
+                                    Method methodToInvoke = KeywordActions.class.getDeclaredMethod(method, String.class, String.class);
+                                    System.out.println("Executing method: " + methodToInvoke.toString() + " with arguments: " + keywordList[4][j + 1] + " ; " + keywordList[5][j + 1]);
+                                    methodToInvoke.invoke(null, (keywordList[4][j + 1]), (keywordList[5][j + 1]));
 
-                        //If no params are passed from excel - invoke method
-                        } else if (keywordList[4][j + 1] == "" && keywordList[5][j + 1] == "" && keywordList[6][j + 1] == "") {
 
-                            Method methodToInvoke = KeywordActions.class.getDeclaredMethod(method, null);
-                            System.out.println("Executing method: " + methodToInvoke.toString());
-                            methodToInvoke.invoke(null, null);
+                                    //If 3 params are passed from excel - invoke method
+                                } else if (/*keywordList[2][j + 1] == "Y" && */keywordList[4][j + 1] != "" && keywordList[5][j + 1] != "" && keywordList[6][j + 1] != "") {
 
-                        }
+                                    Method methodToInvoke = KeywordActions.class.getDeclaredMethod(method, String.class, String.class, String.class);
+                                    System.out.println("Executing method: " + methodToInvoke.toString() + " with arguments: " + keywordList[4][j + 1] + " ; " + keywordList[5][j + 1] + " ; " + keywordList[6][j + 1]);
+                                    methodToInvoke.invoke(null, (keywordList[4][j + 1]), (keywordList[5][j + 1]), (keywordList[6][j + 1]));
 
-                    } else continue;
+                                /*
+                                //If no params are passed from excel - invoke method
+                                } else if (keywordList[4][j + 1] == "" && keywordList[5][j + 1] == "" && keywordList[6][j + 1] == "") {
+
+                                    Method methodToInvoke = KeywordActions.class.getDeclaredMethod(method);
+                                    System.out.println("Executing method: " + methodToInvoke.toString());
+                                    methodToInvoke.invoke(null, null);
+                                */
+
+                            //}
+                            //else {
+                            //        System.out.println("Keyword :" + keywordList[3][j + 1] + " is set not to be run");
+                            //    }
+
+                        } else continue;
+                    }
                 }
             } else {
-                System.out.println("Implementation of keyword :" + keywordList[3][j + 1] + "was not found");
+                System.out.println("Implementation of keyword :" + keywordList[3][j + 1] + " was not found or it is marked to be not executed");
             }
         }
     }
@@ -74,8 +85,8 @@ public class KeywordRouter {
         //Read keywords and parameters from Excel file
         public static void readKeywords () {
 
-            XLSTestCaseReader reader = new XLSTestCaseReader();
-            reader.setInputFile("C:/Users/ASH/IdeaProjects/Selenium/src/TestCases/SampleTC.xls");
+            XLSFileReader reader = new XLSFileReader();
+            reader.setInputFile("C:/Users/ASH/IdeaProjects/Selenium/src/main/resources/SampleTC.xls");
 
             try {
                 keywordList = reader.read();
@@ -87,19 +98,17 @@ public class KeywordRouter {
         //Read names of available methods within KeywordActions class
         public static void readActions () {
 
-            methodList = KeywordActions.class.getDeclaredMethods();
+            Method[] methodList = KeywordActions.class.getDeclaredMethods();
             stringMethodList = new String[methodList.length];
             stringMethodList = methodsToStringArray(methodList, stringMethodList);
 
         }
 
         //Convert available method names from KeywordActions from Method to String format
-        public static String[] methodsToStringArray (Method[]array1, String[]array2){
-            Method[] methodList = array1;
-            String[] stringMethodList = array2;
-            for (int i = 0; i < methodList.length; i++) {
-                stringMethodList[i] = methodList[i].toString();
+        private static String[] methodsToStringArray (Method[]array1, String[]array2){
+            for (int i = 0; i < array1.length; i++) {
+                array2[i] = array1[i].toString();
             }
-            return stringMethodList;
+            return array2;
         }
     }

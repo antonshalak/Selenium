@@ -9,7 +9,7 @@ import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
 
-public class XLSTestCaseReader {
+public class XLSFileReader {
 
     private String inputFile;
     String[][] data = null;
@@ -45,7 +45,7 @@ public class XLSTestCaseReader {
                 }
             }
 
-            numberOfKeywords = sheet.getRows() -1;
+            numberOfKeywords = sheet.getRows() - 1;
 
             /*
             for (int j = 0; j < data.length; j++)

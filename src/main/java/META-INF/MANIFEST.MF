@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+Class-Path: C:\Users\ASH\IdeaProjects\Selenium\target\classes; C:\Users\ASH\IdeaProjects\Selenium\lib\jxl-2.6.12.jar
+Main-Class: com.ash.KeywordRunner

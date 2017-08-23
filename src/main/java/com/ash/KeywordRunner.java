@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 
-public class TestRunner {
+public class KeywordRunner {
 
     public static void main (String [] args) throws IOException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 
@@ -20,5 +20,7 @@ public class TestRunner {
         //Execute keywords
         KeywordRouter.locateAndExecuteKeywords();
 
+        //Exit chrome upon end of execution
+        KeywordActions.exitApp();
     }
 }
