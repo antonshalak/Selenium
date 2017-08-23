@@ -1,7 +1,7 @@
 # Selenium
 Sample KDT Selenium web test automation framework:
 * test cases are to be defined within .xls file (one can add a keyword and up to 3 parameters). Once added this needs to be coded at KeywordActions (note that substring match is used so
-it is important to name any new methods in the way that they are not a substring to any existing methods already implemented)
+it is important to name any new keywords/methods in the way that they are not a substring to any existing keywords/methods already implemented)
 * XLSTestCaseReader is responsible for reading test data from excel test case file
 * KeywordActions is the main library for keyword methods
 * KeywordRouter is responsible for matching keywords from test case file to methods in KeywordActions
