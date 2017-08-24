@@ -9,7 +9,7 @@ public class KeywordRunner {
     public static void main (String [] args) throws IOException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 
         //Setting chrome driver location
-        System.setProperty("webdriver.chrome.driver", "C://Users//ASH//IdeaProjects//Selenium//chromedriver_win32//chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir") + "\\chromedriver_win32\\chromedriver.exe");
 
         //Read keywords and params from Excel test case file
         KeywordRouter.readKeywords();

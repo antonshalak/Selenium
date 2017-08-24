@@ -47,7 +47,8 @@ public class KeywordActions {
         ChromeDriverService.Builder builder = new
                 ChromeDriverService.Builder();
         ChromeDriverService srvc = builder.usingDriverExecutable(new
-                File("C://Users//ASH//IdeaProjects//Selenium//chromedriver_win32//chromedriver.exe"))
+                File(System.getProperty("user.dir")
+                + "\\chromedriver_win32\\chromedriver.exe"))
                 .usingPort(65423).build();
         try {
             srvc.start();

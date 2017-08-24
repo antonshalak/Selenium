@@ -86,7 +86,7 @@ public class KeywordRouter {
         public static void readKeywords () {
 
             XLSFileReader reader = new XLSFileReader();
-            reader.setInputFile("C:/Users/ASH/IdeaProjects/Selenium/src/main/resources/SampleTC.xls");
+            reader.setInputFile(System.getProperty("user.dir") + "\\src\\main\\resources\\SampleTC.xls");
 
             try {
                 keywordList = reader.read();
