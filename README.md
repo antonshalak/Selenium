@@ -1,4 +1,8 @@
 # Selenium
+This is a Maven Idea project
+To quickly check the steps you can look at reports/html report file
+
+
 Sample KDT Selenium web test automation framework:
 * test cases are to be defined within .xls file (one can add a keyword and up to 3 parameters). Once added this needs to be coded at KeywordActions (note that substring match is used so
 it is important to name any new keywords/methods in the way that they are not a substring to any existing keywords/methods already implemented)
