@@ -12,9 +12,8 @@ it is important to name any new keywords/methods in the way that they are not a 
 * KeywordRunner is responsible for running the tests
 * I didn't implement any pageobject class here as the demo works with just one page, so I'm operating with raw web elements retrieved through driver calls. Pageobjects
 describing the page and elements on it can be implemented in future if the need arises
-* This small framework lacks some features, like Run flag capability allowing to choose keywords to run/skip in test case file
+* This small framework lacks some features, like Run flag capability allowing to choose keywords to run/skip in test case file is  not yet implemented
 
-
-Note!: before running any tests please check the project is located at <System.getProperty("user.dir")> directory at your machine
+Note!: before running any tests please check this project is located at <System.getProperty("user.dir")> directory at your machine, i.e. C:\Users\<user name>\IdeaProjects\Selenium (this might be further taken out into settings file in future commmits to this project)
 
 This is for demo purpose only and the test case is exclusively implemented for interview purposes
