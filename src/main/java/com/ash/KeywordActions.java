@@ -1,11 +1,16 @@
 package com.ash;
 
+import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import com.relevantcodes.extentreports.ExtentReports;
+import com.relevantcodes.extentreports.ExtentTest;
+import com.relevantcodes.extentreports.LogStatus;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +24,22 @@ public class KeywordActions {
     private static ChromeDriver chrome;
 
 
+
+    static String extentReportFile = System.getProperty("user.dir")
+            + "\\extentReportFile.html";
+    static String extentReportImage = System.getProperty("user.dir")
+            + "\\extentReportImage.png";
+
+    // Create object of extent report and specify the report file path.
+    static ExtentReports extent = new ExtentReports(extentReportFile, false);
+
+    // Start the test using the ExtentTest class object.
+    static ExtentTest extentTest = extent.startTest("Keywords test",
+            "Keywords test");
+
     public static void openApp (String url) {
+
+
 
         //Running chrome driver process
 
@@ -36,6 +56,10 @@ public class KeywordActions {
 
         chrome = new ChromeDriver(srvc);
         chrome.get(url);
+
+        extentTest.log(LogStatus.INFO, "Browser Launched");
+        extentTest.log(LogStatus.PASS, "Navigated to " + url);
+
         chrome.manage().window().maximize();
     }
 
@@ -48,6 +72,9 @@ public class KeywordActions {
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='keyword']")));
         chrome.findElement(By.xpath("//*[@id='keyword']")).clear();
         chrome.findElement(By.xpath("//*[@id='keyword']")).sendKeys(jobTitle);
+
+        extentTest.log(LogStatus.INFO, "Job value title set to "+ jobTitle);
+
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='loc_placeholder']")));
         chrome.findElement(By.xpath("//*[@id='loc_placeholder']")).click();
 
@@ -57,6 +84,7 @@ public class KeywordActions {
             for (WebElement searchChoiceClose : selectedLocations) {
                 searchChoiceClose.click();
             }
+            extentTest.log(LogStatus.INFO, "Location selections cleared");
         }
 
         //Setting Location search criteria
@@ -65,6 +93,7 @@ public class KeywordActions {
         for (WebElement option : options) {
             if (((option.getText()).matches("(?i).*" + jobLocation + ".*"))) {
                 option.click();
+                extentTest.log(LogStatus.INFO, "Location selections added : " + jobLocation);
             }
         }
 
@@ -75,22 +104,28 @@ public class KeywordActions {
         //Waiting for search results to load
         try {
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='job_search_filters']")));
+            extentTest.log(LogStatus.INFO, "Search results loaded");
         }
         catch (Exception e) {
             System.out.println("Page was not loaded properly after search or markup has changed");
             e.printStackTrace();
+            extentTest.log(LogStatus.INFO,"Error Snapshot : " + extentTest.addScreenCapture(extentReportImage));
         }
 
         //Checking the loaded results
         if (chrome.findElements(By.partialLinkText(jobTitle)).size() !=0) {
             System.out.println(chrome.findElement(By.className("number_of_results")).getText() + " found in '" +
                     jobLocation + "' location for '" + jobTitle + "' job title");
+            extentTest.log(LogStatus.PASS,"Search results found : " + extentTest.addScreenCapture(extentReportImage));
+
         }
         else {
             System.out.println("No results found in " + jobLocation + " for " + jobTitle + " job title");
+            extentTest.log(LogStatus.PASS,"No search results found : " + extentTest.addScreenCapture(extentReportImage));
         }
-
     }
+
+
 
     public static void searchJobsByTitle (String jobTitle) throws InterruptedException {
 
@@ -102,6 +137,8 @@ public class KeywordActions {
         chrome.findElement(By.xpath("//*[@id='keyword']")).clear();
         chrome.findElement(By.xpath("//*[@id='keyword']")).sendKeys(jobTitle);
 
+        extentTest.log(LogStatus.INFO, "Job value title set to "+ jobTitle);
+
         //Clearing up Location search  criteria if any
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='loc_placeholder']")));
         chrome.findElement(By.xpath("//*[@id='loc_placeholder']")).click();
@@ -112,6 +149,7 @@ public class KeywordActions {
             for (WebElement searchChoiceClose : selectedLocations) {
                 searchChoiceClose.click();
             }
+            extentTest.log(LogStatus.INFO, "Location selections cleared");
         }
 
         //Hitting Search button
@@ -121,19 +159,23 @@ public class KeywordActions {
         //Waiting for page to load search results
         try {
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='job_search_filters']")));
+            extentTest.log(LogStatus.INFO, "Search results loaded");
         }
         catch (Exception e) {
             System.out.println("Page was not loaded properly after search or markup has changed");
             e.printStackTrace();
+            extentTest.log(LogStatus.INFO,"Error Snapshot : " + extentTest.addScreenCapture(extentReportImage));
         }
 
         //Checking search results
         if (chrome.findElements(By.partialLinkText(jobTitle)).size() !=0) {
             System.out.println(chrome.findElement(By.className("number_of_results")).getText() + " found" +
                     " for '" + jobTitle + "' job title");
+            extentTest.log(LogStatus.PASS,"Search results found : " + extentTest.addScreenCapture(extentReportImage));
         }
         else {
             System.out.println("No results found for '" + jobTitle + "' job title");
+            extentTest.log(LogStatus.PASS,"No search results found : " + extentTest.addScreenCapture(extentReportImage));
         }
 
         chrome.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
@@ -141,6 +183,12 @@ public class KeywordActions {
     }
 
     public static void exitApp () {
+
         chrome.close();
+        extentTest.log(LogStatus.INFO, "Browser closed");
+        // close report.
+        extent.endTest(extentTest);
+        // writing everything to document.
+        extent.flush();
     }
 }
