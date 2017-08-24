@@ -14,4 +14,7 @@ it is important to name any new keywords/methods in the way that they are not a 
 describing the page and elements on it can be implemented in future if the need arises
 * This small framework lacks some features, like Run flag capability allowing to choose keywords to run/skip in test case file
 
+
+Note!: before running any tests please check the project is located at <System.getProperty("user.dir")> directory at your machine
+
 This is for demo purpose only and the test case is exclusively implemented for interview purposes
