@@ -1,16 +1,17 @@
 package com.ash;
 
-import org.junit.Test;
+import com.relevantcodes.extentreports.ExtentReports;
+import com.relevantcodes.extentreports.ExtentTest;
+import com.relevantcodes.extentreports.LogStatus;
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
-import com.relevantcodes.extentreports.ExtentReports;
-import com.relevantcodes.extentreports.ExtentTest;
-import com.relevantcodes.extentreports.LogStatus;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,9 +27,9 @@ public class KeywordActions {
 
 
     static String extentReportFile = System.getProperty("user.dir")
-            + "\\extentReportFile.html";
-    static String extentReportImage = System.getProperty("user.dir")
-            + "\\extentReportImage.png";
+            + "\\reports\\extentReportFile.html";
+    /*static String extentReportImage = System.getProperty("user.dir")
+            + "\\extentReportImage.png";*/
 
     // Create object of extent report and specify the report file path.
     static ExtentReports extent = new ExtentReports(extentReportFile, false);
@@ -103,25 +104,29 @@ public class KeywordActions {
 
         //Waiting for search results to load
         try {
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='job_search_filters']")));
+            chrome.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
+            //wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='jSearchSubmit']")));
             extentTest.log(LogStatus.INFO, "Search results loaded");
         }
         catch (Exception e) {
             System.out.println("Page was not loaded properly after search or markup has changed");
+            extentTest.log(LogStatus.INFO,"Error Snapshot : " + extentTest.addScreenCapture(takeScreenshot()));
             e.printStackTrace();
-            extentTest.log(LogStatus.INFO,"Error Snapshot : " + extentTest.addScreenCapture(extentReportImage));
+
+
         }
 
         //Checking the loaded results
         if (chrome.findElements(By.partialLinkText(jobTitle)).size() !=0) {
             System.out.println(chrome.findElement(By.className("number_of_results")).getText() + " found in '" +
                     jobLocation + "' location for '" + jobTitle + "' job title");
-            extentTest.log(LogStatus.PASS,"Search results found : " + extentTest.addScreenCapture(extentReportImage));
+
+            extentTest.log(LogStatus.PASS,"Search results found : " + extentTest.addScreenCapture(takeScreenshot()));
 
         }
         else {
             System.out.println("No results found in " + jobLocation + " for " + jobTitle + " job title");
-            extentTest.log(LogStatus.PASS,"No search results found : " + extentTest.addScreenCapture(extentReportImage));
+            extentTest.log(LogStatus.PASS,"No search results found : " + extentTest.addScreenCapture(takeScreenshot()));
         }
     }
 
@@ -158,27 +163,54 @@ public class KeywordActions {
 
         //Waiting for page to load search results
         try {
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='job_search_filters']")));
+            chrome.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
+            //wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='jSearchSubmit']")));
             extentTest.log(LogStatus.INFO, "Search results loaded");
         }
         catch (Exception e) {
             System.out.println("Page was not loaded properly after search or markup has changed");
             e.printStackTrace();
-            extentTest.log(LogStatus.INFO,"Error Snapshot : " + extentTest.addScreenCapture(extentReportImage));
+            extentTest.log(LogStatus.INFO,"Error Snapshot : " + extentTest.addScreenCapture(takeScreenshot()));
         }
 
         //Checking search results
         if (chrome.findElements(By.partialLinkText(jobTitle)).size() !=0) {
             System.out.println(chrome.findElement(By.className("number_of_results")).getText() + " found" +
                     " for '" + jobTitle + "' job title");
-            extentTest.log(LogStatus.PASS,"Search results found : " + extentTest.addScreenCapture(extentReportImage));
+            extentTest.log(LogStatus.PASS,"Search results found : " + extentTest.addScreenCapture(takeScreenshot()));
         }
         else {
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='job_search_filters']")));
             System.out.println("No results found for '" + jobTitle + "' job title");
-            extentTest.log(LogStatus.PASS,"No search results found : " + extentTest.addScreenCapture(extentReportImage));
+            extentTest.log(LogStatus.PASS,"No search results found : " + extentTest.addScreenCapture(takeScreenshot()));
         }
 
         chrome.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
+
+    }
+
+    public static String takeScreenshot (){
+
+        File src = ((TakesScreenshot)chrome).getScreenshotAs(OutputType.FILE);
+        Long currentTimeMillis = System.currentTimeMillis();
+
+        try {
+
+
+            // now copy the  screenshot to desired location using copyFile //method
+
+            FileUtils.copyFile(src, new File(System.getProperty("user.dir")
+                    + "\\reports\\images\\extentReportImage_" + currentTimeMillis + ".png"));
+
+        }
+        catch (IOException e)
+        {
+            System.out.println(e.getMessage());
+        }
+
+        String extentReportImage = System.getProperty("user.dir")
+                + "\\reports\\images\\extentReportImage_" + currentTimeMillis + ".png";
+        return extentReportImage;
 
     }
 
